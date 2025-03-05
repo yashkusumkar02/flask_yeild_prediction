@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yield Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        async function predictYield() {
+            const cropName = document.getElementById("cropName").value;
+            const area = document.getElementById("area").value;
+            const resultDiv = document.getElementById("result");
+
+            if (!cropName || !area) {
+                resultDiv.innerHTML = "<p class='error'>⚠ Please fill all fields.</p>";
+                return;
+            }
+
+            const response = await fetch("/yield-prediction", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ cropName, area }),
+            });
+
+            const data = await response.json();
+            if (data.predicted_yield) {
+                resultDiv.innerHTML = `<p class='success'>🌾 Predicted Yield: <strong>${data.predicted_yield} kg</strong></p>`;
+            } else {
+                resultDiv.innerHTML = "<p class='error'>⚠ Error fetching prediction.</p>";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 AI-Based Yield Prediction</h1>
+        <div class="form-group">
+            <label for="cropName">Enter Crop Name:</label>
+            <input type="text" id="cropName" placeholder="e.g. Wheat">
+        </div>
+        <div class="form-group">
+            <label for="area">Enter Land Area (Acres):</label>
+            <input type="number" id="area" placeholder="e.g. 10">
+        </div>
+        <button onclick="predictYield()">🔍 Predict Yield</button>
+        <div id="result"></div>
+    </div>
+</body>
+</html>
