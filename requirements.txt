@@ -3,3 +3,7 @@ flask-cors
 pandas
 numpy
 gunicorn
+scikit-learn
+xgboost
+pytest
+requests
